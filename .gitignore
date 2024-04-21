@@ -41,3 +41,5 @@ typings
 bin
 obj
 
+.vs
+*.user

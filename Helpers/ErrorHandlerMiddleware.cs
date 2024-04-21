@@ -8,16 +8,12 @@ using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-public class ErrorHandlerMiddleware
+public class ErrorHandlerMiddleware(
+    RequestDelegate next,
+    ILogger<ErrorHandlerMiddleware> logger)
 {
-    private readonly RequestDelegate _next;
-    private readonly ILogger _logger;
-
-    public ErrorHandlerMiddleware(RequestDelegate next, ILogger<ErrorHandlerMiddleware> logger)
-    {
-        _next = next;
-        _logger = logger;
-    }
+    private readonly RequestDelegate _next = next;
+    private readonly ILogger _logger = logger;
 
     public async Task Invoke(HttpContext context)
     {
@@ -32,11 +28,11 @@ public class ErrorHandlerMiddleware
 
             switch (error)
             {
-                case AppException e:
+                case AppException:
                     // custom application error
                     response.StatusCode = (int)HttpStatusCode.BadRequest;
                     break;
-                case KeyNotFoundException e:
+                case KeyNotFoundException:
                     // not found error
                     response.StatusCode = (int)HttpStatusCode.NotFound;
                     break;

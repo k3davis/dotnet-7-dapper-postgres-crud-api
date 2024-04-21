@@ -5,14 +5,9 @@ using Dapper;
 using Microsoft.Extensions.Options;
 using Npgsql;
 
-public class DataContext
+public class DataContext(IOptions<DbSettings> dbSettings)
 {
-    private DbSettings _dbSettings;
-
-    public DataContext(IOptions<DbSettings> dbSettings)
-    {
-        _dbSettings = dbSettings.Value;
-    }
+    private readonly DbSettings _dbSettings = dbSettings.Value;
 
     public IDbConnection CreateConnection()
     {
@@ -22,11 +17,11 @@ public class DataContext
 
     public async Task Init()
     {
-        await _initDatabase();
-        await _initTables();
+        await InitDatabase();
+        await InitTables();
     }
 
-    private async Task _initDatabase()
+    private async Task InitDatabase()
     {
         // create database if it doesn't exist
         var connectionString = $"Host={_dbSettings.Server}; Database=postgres; Username={_dbSettings.UserId}; Password={_dbSettings.Password};";
@@ -40,7 +35,7 @@ public class DataContext
         }
     }
 
-    private async Task _initTables()
+    private async Task InitTables()
     {
         // create tables if they don't exist
         using var connection = CreateConnection();

@@ -1,32 +1,27 @@
 ﻿namespace WebApi.Controllers;
 
 using Microsoft.AspNetCore.Mvc;
+using WebApi.Entities;
 using WebApi.Models.Users;
 using WebApi.Services;
 
 [ApiController]
 [Route("[controller]")]
-public class UsersController : ControllerBase
+public class UsersController(IUserService userService) : ControllerBase
 {
-    private IUserService _userService;
-
-    public UsersController(IUserService userService)
-    {
-        _userService = userService;
-    }
+    private readonly IUserService _userService = userService;
 
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<ActionResult> GetAll()
     {
         var users = await _userService.GetAll();
         return Ok(users);
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(int id)
+    public async Task<ActionResult<User>> GetById(int id)
     {
-        var user = await _userService.GetById(id);
-        return Ok(user);
+        return await _userService.GetById(id);
     }
 
     [HttpPost]

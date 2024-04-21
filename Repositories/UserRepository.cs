@@ -14,14 +14,9 @@ public interface IUserRepository
     Task Delete(int id);
 }
 
-public class UserRepository : IUserRepository
+public class UserRepository(DataContext context) : IUserRepository
 {
-    private DataContext _context;
-
-    public UserRepository(DataContext context)
-    {
-        _context = context;
-    }
+    private readonly DataContext _context = context;
 
     public async Task<IEnumerable<User>> GetAll()
     {

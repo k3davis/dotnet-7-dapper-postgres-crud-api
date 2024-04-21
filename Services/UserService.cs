@@ -16,18 +16,12 @@ public interface IUserService
     Task Delete(int id);
 }
 
-public class UserService : IUserService
+public class UserService(
+    IUserRepository userRepository,
+    IMapper mapper) : IUserService
 {
-    private IUserRepository _userRepository;
-    private readonly IMapper _mapper;
-
-    public UserService(
-        IUserRepository userRepository,
-        IMapper mapper)
-    {
-        _userRepository = userRepository;
-        _mapper = mapper;
-    }
+    private readonly IUserRepository _userRepository = userRepository;
+    private readonly IMapper _mapper = mapper;
 
     public async Task<IEnumerable<User>> GetAll()
     {
